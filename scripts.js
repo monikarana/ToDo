@@ -10,50 +10,6 @@ var noteTable = document.getElementById("notesTable");
   });
 })();
 
-function addNote(note) {
-  var noteId = "Note" + (localStorage.length+1)
-  localStorage.setItem(noteId, note);
-  displayAddedNote(noteId);
-}
-function createButton(btnType, noteId){
-  console.log(btnType, noteId);
-  var btn = document.createElement('button');
-  var node = document.createTextNode(btnType);
-  btn.setAttribute("id", btnType+noteId);
-  btn.appendChild(node);
-  btn.setAttribute("onclick", "action('"+ btnType+ "','" + noteId+"')");
-  return btn;
-}
-function action(btnType, noteId) {
-  console.log("triggerd", btnType, noteId);
-}
-
-function action(btnType, noteId) {
-  if(btnType == "Edit") {
-    console.log("edit triggered for", noteId);
-  } else {
-    localStorage.removeItem(noteId);
-    var tableRow = document.getElementById(noteId);
-    tableRow.parentNode.removeChild(tableRow);
-  }
-}
-
-input.addEventListener(13, function(){
-  var note = input.value;
-  if(note) {
-    addNote(note);
-  } else {
-    alert("No note to add");
-  }
-});
-submit.addEventListener('click', function(){
-  var note = input.value;
-  if(note) {
-    addNote(note);
-  } else {
-    alert("No note to add");
-  }
-});
 function displayAddedNote(noteId) {
   if(localStorage.length>0) {
     var noteValue = localStorage[noteId];
@@ -65,6 +21,55 @@ function displayAddedNote(noteId) {
     cell1.innerHTML = noteValue;
     cell2.appendChild(createButton("Edit", noteId));
     cell3.appendChild(createButton("Delete", noteId))
-    console.log("note added in local storage" + noteValue);
   }
+}
+function createButton(btnType, noteId){
+  var btn = document.createElement('button');
+  var node = document.createTextNode(btnType);
+  btn.setAttribute("id", btnType+noteId);
+  btn.appendChild(node);
+  btn.setAttribute("onclick", "action('"+ btnType+ "','" + noteId+"')");
+  return btn;
+}
+function action(btnType, noteId) {
+  if(btnType == "Edit") {
+    // console.log("edit triggered for", noteId);
+    updateNote(noteId);
+  } else {
+    localStorage.removeItem(noteId);
+    var tableRow = document.getElementById(noteId);
+    tableRow.parentNode.removeChild(tableRow);
+  }
+}
+function updateNote(noteId) {
+  input.value = localStorage.getItem(noteId);
+  if(document.getElementById('submit') !== null){
+      var submitBtn = document.getElementById('submit');
+      submitBtn.parentNode.removeChild(submitBtn);
+      createSaveBtn(noteId);
+  }
+}
+function createSaveBtn(noteId) {
+  var containerDiv = document.getElementById('inputDiv');
+  var saveBtn = document.createElement('input');
+  saveBtn.setAttribute("type","submit");
+  saveBtn.setAttribute("id", "save");
+  saveBtn.setAttribute("value", "Save");
+  saveBtn.setAttribute("onclick", "editNote('"+ noteId + "')");
+  containerDiv.appendChild(saveBtn);
+}
+function editNote(noteId) {
+  localStorage.setItem(noteId, input.value);
+  location.reload();
+}
+function addNote() {
+  var note = input.value;
+  if(note) {
+    var noteId = "Note" + (localStorage.length+1)
+    localStorage.setItem(noteId, note);
+    displayAddedNote(noteId);
+  } else {
+    alert("No note to add");
+  }
+
 }

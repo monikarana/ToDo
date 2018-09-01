@@ -5,8 +5,10 @@
   </head>
   <body>
     <div class="container">
-      <input type="text" />
-      <input type="submit" />
+      <div id="inputDiv">
+        <input type="text" placeholder="Add notes" />
+        <input id="submit" type="submit" onclick="addNote()" />
+      </div>
       <div>
         <table id="notesTable">
         </table>
