@@ -1,19 +1,20 @@
 
 var submit = document.querySelector("input[type='submit']");
 var input = document.querySelector("input[type='text']");
-var noteTable = document.getElementById("notesTable");
+var notesTable = document.getElementById("notesTable");
 
 (function() {
   var keys = Object.keys(localStorage);
   keys.forEach(function(id) {
-    displayAddedNote(id);
+    displayExistingNote(id);
   });
 })();
 
-function displayAddedNote(noteId) {
+function displayExistingNote(noteId) {
   if(localStorage.length>0) {
     var noteValue = localStorage[noteId];
-    var row = noteTable.insertRow(0);
+    //add row to notesTable, give index to add table row on top
+    var row = notesTable.insertRow(0);
     row.setAttribute("id", noteId);
     var cell1 = row.insertCell(0);
     var cell2 = row.insertCell(1);
@@ -33,21 +34,20 @@ function createButton(btnType, noteId){
 }
 function action(btnType, noteId) {
   if(btnType == "Edit") {
-    // console.log("edit triggered for", noteId);
     updateNote(noteId);
   } else {
-    localStorage.removeItem(noteId);
-    var tableRow = document.getElementById(noteId);
-    tableRow.parentNode.removeChild(tableRow);
+    deleteNote(noteId);
   }
 }
 function updateNote(noteId) {
   input.value = localStorage.getItem(noteId);
-  if(document.getElementById('submit') !== null){
-      var submitBtn = document.getElementById('submit');
-      submitBtn.parentNode.removeChild(submitBtn);
-      createSaveBtn(noteId);
-  }
+  removeSubmitBtn(noteId);
+  createSaveBtn(noteId);
+}
+function deleteNote(noteId) {
+  localStorage.removeItem(noteId);
+  var tableRow = document.getElementById(noteId);
+  tableRow.parentNode.removeChild(tableRow)
 }
 function createSaveBtn(noteId) {
   var containerDiv = document.getElementById('inputDiv');
@@ -58,6 +58,12 @@ function createSaveBtn(noteId) {
   saveBtn.setAttribute("onclick", "editNote('"+ noteId + "')");
   containerDiv.appendChild(saveBtn);
 }
+function removeSubmitBtn(noteId) {
+  if(document.getElementById('submit') !== null){
+      var submitBtn = document.getElementById('submit');
+      submitBtn.parentNode.removeChild(submitBtn);
+  }
+}
 function editNote(noteId) {
   localStorage.setItem(noteId, input.value);
   location.reload();
@@ -67,7 +73,7 @@ function addNote() {
   if(note) {
     var noteId = "Note" + (localStorage.length+1)
     localStorage.setItem(noteId, note);
-    displayAddedNote(noteId);
+    displayExistingNote(noteId);
   } else {
     alert("No note to add");
   }
