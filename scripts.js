@@ -77,5 +77,4 @@ function addNote() {
   } else {
     alert("No note to add");
   }
-
 }
